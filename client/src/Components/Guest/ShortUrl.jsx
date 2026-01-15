@@ -1,19 +1,10 @@
 import { useContext } from "react";
-import UrlContext from "../context/UrlContext";
+import UrlContext from "../../context/UrlContext/UrlContext";
 
 const ShortUrl = ({ errMsg, isLoading }) => {
-  const { shortUrl, longUrl, countData } = useContext(UrlContext);
+  const { shortUrl, longUrl } = useContext(UrlContext);
   if (errMsg.length >= 1) {
     return <h3 className="text-lg font-bold mt-5 text-secondary">{errMsg}</h3>;
-  }
-
-  if (countData > 2) {
-    return (
-      <h3 className="text-lg font-bold mt-5 text-secondary">
-        Only two urls can be generated without signing in. Please log in to
-        create more short urls.
-      </h3>
-    );
   }
 
   if (isLoading) {

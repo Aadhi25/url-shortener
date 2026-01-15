@@ -13,4 +13,4 @@ function hexToBase62(hexString) {
   return base62String || "0";
 }
 
-module.exports = { hexToBase62 };
+export { hexToBase62 };

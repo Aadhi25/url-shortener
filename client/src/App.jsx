@@ -1,19 +1,27 @@
-import { useState, useEffect, useContext } from "react";
-import Navbar from "./Components/Navbar";
-import Hero from "./Components/Hero";
-import CardSec from "./Components/CardSec";
-import UrlProvider from "./context/UrlProvider";
-import ShowUrl from "./Components/ShowUrl";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UrlProvider from "./context/UrlContext/UrlProvider";
+import Guest from "./Components/Guest/Guest";
+import PrivateRoute from "./Routes/PrivateRoute";
+import Dashboard from "./Components/User/Dashboard";
 
 const App = () => {
   return (
     <UrlProvider>
-      <div className="font-lato">
-        <Navbar />
-        <Hero />
-        <CardSec />
-        <ShowUrl />
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Guest />} />
+
+          {/* User Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          ></Route>
+        </Routes>
+      </BrowserRouter>
     </UrlProvider>
   );
 };

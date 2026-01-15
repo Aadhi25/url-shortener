@@ -1,34 +1,56 @@
-const express = require("express");
+import express from "express";
 const app = express();
 const port = 3000;
-const cors = require("cors");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const passport = require("passport");
+import cors from "cors";
+import mongoose from "mongoose";
+import session from "express-session";
+import passport from "passport";
+import Razorpay from "razorpay";
+import { redisClient } from "./utils/redisClient.js";
+import { checkAuthenticated } from "./middleware/checkAuth.js";
+import { RedisStore } from "connect-redis";
+import { syncToDb } from "./utils/syncToDb.js";
+import cron from "node-cron";
 
 // Routes
-const urlRoutes = require("./routes/UrlRoutes");
-const authRoutes = require("./routes/AuthRoutes");
-const dashboardRoutes = require("./routes/DashboardRoute");
+import urlRoutes from "./routes/UrlRoutes.js";
+import authRoutes from "./routes/AuthRoutes.js";
+import userUrlRoutes from "./routes/UserUrlRoutes.js";
+import paymentRoutes from "./routes/PaymentRoutes.js";
 
-require("dotenv").config();
-require("./config/passportStrategy");
+import "dotenv/config";
+import { passportConfig } from "./config/passportStrategy.js";
+
+passportConfig();
+// Initialize store.
+let redisStore = new RedisStore({
+  client: redisClient,
+  prefix: "myapp:",
+  ttl: 86400,
+});
 app.use(express.json());
 app.use(
   session({
+    store: redisStore,
     secret: process.env.SECRET,
     saveUninitialized: false,
     resave: false,
     cookie: {
-      maxAge: 60000 * 60,
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+      // maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
-
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
-
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Vite frontend
+    credentials: true,
+  })
+);
 mongoose
   .connect(process.env.MONGO_CON_STRING)
   .then(() => {
@@ -37,11 +59,24 @@ mongoose
   .catch(() => {
     console.error;
   });
+app.use("/api/guest", urlRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", checkAuthenticated, userUrlRoutes);
+app.use("/api/user/payments", checkAuthenticated, paymentRoutes);
 
-app.use("/trialurl", urlRoutes);
-app.use("/", authRoutes);
-app.use("/", dashboardRoutes);
+// Razorpay config
+export const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_API_KEY,
+  key_secret: process.env.RAZORPAY_API_SECRET,
+});
+
+// Schedule a cron job that updates the database every 8 minutes.
+
+cron.schedule("*/1 * * * *", async () => {
+  console.log("cron running");
+  await syncToDb();
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });

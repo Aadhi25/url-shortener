@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
-import UrlContext from "../context/UrlContext";
+import { useContext } from "react";
+import UrlContext from "../../context/UrlContext/UrlContext";
 
 const ShowUrl = () => {
-  const { trialUrl } = useContext(UrlContext);
+  const { guestUrls } = useContext(UrlContext);
 
   return (
-    // Show the urls that is stored in the localstorage
+    // Show the urls that is stored in the guest session
     <div className="flex flex-col mx-auto w-[90%] my-10">
-      {trialUrl.length > 0 ? (
+      {guestUrls.length > 0 ? (
         <div className="table w-full ...">
           <div className="table-header-group ...">
             <div className="table-row">
@@ -16,16 +16,16 @@ const ShowUrl = () => {
               </div>
             </div>
           </div>
-          {trialUrl.map((url) => (
+          {guestUrls.map((url) => (
             <div className="table-row-group">
-              <div className="table-row" key={url.urlId}>
+              <div className="table-row" key={url._id}>
                 <div className="mt-5 table-cell ...">
                   <a
                     className="text-accent text-lg font-bold"
-                    href={url.bigUrl}
+                    href={url.longUrl}
                     target="_blank"
                   >
-                    {url.smallUrl}
+                    {url.shortUrl}
                   </a>
                 </div>
               </div>
@@ -40,8 +40,3 @@ const ShowUrl = () => {
 };
 
 export default ShowUrl;
-
-// <li key={url.urlId}>
-//   <p>Longurl: {url.bigUrl}</p>
-//   <p>ShortUrl: {url.smallUrl}</p>
-// </li>

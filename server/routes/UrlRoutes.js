@@ -1,7 +1,23 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { postTrialUrl } = require("../controllers/urlController");
+import { createShortUrl, getGuestUrls } from "../controllers/urlController.js";
+import { guestLimiter } from "../middleware/guestLimiter.js";
+import { rateLimiter } from "../middleware/rateLimiter.js";
 
-router.post("/", postTrialUrl);
+router.post(
+  "/create-short-url",
+  guestLimiter(2),
+  rateLimiter({ limit: 10, windowInSec: 60 }),
+  createShortUrl
+);
 
-module.exports = router;
+router.get("/session-info", (req, res) => {
+  return res.json({
+    isAuthenticated: req.isAuthenticated(),
+    urlCount: req.session.urlCount,
+    limit: 2,
+  });
+});
+
+router.get("/guest-urls", getGuestUrls);
+export default router;

@@ -1,0 +1,18 @@
+import express from "express";
+const router = express.Router();
+import { dashboard } from "../controllers/dashboardController.js";
+import {
+  createShortUrl,
+  deleteUserUrl,
+  getUserUrls,
+  redirectUrl,
+  statsUrl,
+} from "../controllers/urlController.js";
+
+router.get("/dashboard", dashboard);
+router.post("/create-short-url", createShortUrl);
+router.get("/stats/:shorturl", statsUrl);
+router.get("/redirect/:shorturl", redirectUrl);
+router.get("/get-url-by-user", getUserUrls);
+router.delete("/delete-url/:urlId", deleteUserUrl);
+export default router;
