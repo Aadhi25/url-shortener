@@ -8,9 +8,14 @@ import {
   redirectUrl,
   statsUrl,
 } from "../controllers/urlController.js";
+import { rateLimiter } from "../middleware/rateLimiter.js";
 
 router.get("/dashboard", dashboard);
-router.post("/create-short-url", createShortUrl);
+router.post(
+  "/create-short-url",
+  rateLimiter({ limit: 10, windowInSec: 60 }),
+  createShortUrl
+);
 router.get("/stats/:shorturl", statsUrl);
 router.get("/redirect/:shorturl", redirectUrl);
 router.get("/get-url-by-user", getUserUrls);

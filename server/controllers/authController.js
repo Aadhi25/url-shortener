@@ -7,7 +7,7 @@ import crypto from "crypto";
 
 const register = async (req, res) => {
   // Get the user email and password
-  const { profileName, email, password } = req.body;
+  const { profileName, email, password, isVerified } = req.body;
   // Email validation
   if (!validator.isEmail(email)) {
     return res.status(400).json({
@@ -31,12 +31,18 @@ const register = async (req, res) => {
     const checkUser = await Auth.findOne({
       email: email,
     });
-    // if the user does not exist create a new user
+    if (checkUser) {
+      return res
+        .status(400)
+        .json({ message: "You are already registered. Please log in" });
+    }
+
     if (!checkUser) {
       const newUser = await Auth.create({
         profileName: profileName,
         email: email,
         password: password,
+        isVerified: isVerified,
       });
 
       const token = crypto.randomBytes(64).toString("hex");
@@ -46,12 +52,12 @@ const register = async (req, res) => {
       newUser.verifyTokenExpiry = Date.now() + 60 * 60 * 1000;
       await newUser.save();
 
-      const verifyUrl = `${process.env.FRONTEND_URL}/auth/verify-email?token=${token}`;
+      const verifyUrl = `${process.env.FRONTEND_URL}/auth/verify-user?token=${token}`;
 
-      await sendVerifyEmail(newUser.email, verifyUrl);
+      if (process.env.NODE_ENV !== "test") {
+        await sendVerifyEmail(newUser.email, verifyUrl);
+      }
       return res.status(200).json(newUser);
-    } else {
-      return res.status(200).send("You are already registered. Please log in");
     }
   } catch (error) {
     console.log(error);
@@ -60,13 +66,12 @@ const register = async (req, res) => {
 };
 
 const verifyUser = async (req, res) => {
-  // api/auth/verify-user?token=
   // Get the token
-  const { token } = req.query;
+  const { token } = req.body;
 
   // Verify the token and update the verification to true in database
   const hashed = crypto.createHash("sha256").update(token).digest("hex");
-
+  console.log(hashed);
   const findUser = await Auth.findOne({
     verifyToken: hashed,
     verifyTokenExpiry: { $gt: Date.now() },

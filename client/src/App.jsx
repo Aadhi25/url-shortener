@@ -3,6 +3,7 @@ import UrlProvider from "./context/UrlContext/UrlProvider";
 import Guest from "./Components/Guest/Guest";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Dashboard from "./Components/User/Dashboard";
+import VerifyPage from "./Components/Auth/VerifyPage";
 
 const App = () => {
   return (
@@ -10,6 +11,9 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Guest />} />
+
+          {/* Auth verify route */}
+          <Route path="/auth/verify-user" element={<VerifyPage />} />
 
           {/* User Routes */}
           <Route

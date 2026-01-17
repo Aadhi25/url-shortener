@@ -51,7 +51,9 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
       });
       console.log(registerUser.data);
       onClose();
-      toast.success("Successfully Registerd. Log in to your account now.");
+      toast.success(
+        "Successfully Registerd. Verify your account by clicking the link in your email."
+      );
     } catch (error) {
       console.log(error);
     }

@@ -21,8 +21,7 @@ export function passportConfig() {
     )
   );
   passport.serializeUser((user, done) => {
-    console.log(user);
-    done(null, user.id);
+    done(null, user._id.toString());
   });
   passport.deserializeUser(async (userId, done) => {
     const user = await Auth.findById(userId);

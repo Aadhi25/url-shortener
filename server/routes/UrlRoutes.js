@@ -2,14 +2,8 @@ import express from "express";
 const router = express.Router();
 import { createShortUrl, getGuestUrls } from "../controllers/urlController.js";
 import { guestLimiter } from "../middleware/guestLimiter.js";
-import { rateLimiter } from "../middleware/rateLimiter.js";
 
-router.post(
-  "/create-short-url",
-  guestLimiter(2),
-  rateLimiter({ limit: 10, windowInSec: 60 }),
-  createShortUrl
-);
+router.post("/create-short-url", guestLimiter(2), createShortUrl);
 
 router.get("/session-info", (req, res) => {
   return res.json({

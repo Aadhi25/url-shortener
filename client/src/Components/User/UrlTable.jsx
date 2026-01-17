@@ -109,18 +109,16 @@ const UrlTable = () => {
             className="rounded-xl border bg-white p-4 shadow-sm"
           >
             <div className="mb-2">
-              <p className="font-semibold text-blue-600">
-                shrink.it/{url.shortUrl}
-              </p>
+              <p className="font-semibold text-accentHover">{url.shortUrl}</p>
               <p className="text-sm text-gray-500 truncate">{url.longUrl}</p>
             </div>
 
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">
-                👁 {url.clicks} clicks
+                👁 {url.noOfClicks} clicks
               </span>
-              <button className="rounded-lg bg-blue-50 px-3 py-1 text-sm text-blue-600">
-                Copy
+              <button className="rounded-lg px-3 py-1 text-sm text-red-600 cursor-pointer">
+                Delete
               </button>
             </div>
           </div>

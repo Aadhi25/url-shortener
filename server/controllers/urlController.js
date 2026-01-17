@@ -1,5 +1,6 @@
 import Url from "../models/Url.js";
 import { redisClient } from "../utils/redisClient.js";
+import { isValidUrl } from "../utils/isValidUrl.js";
 import sanitizeHtml from "sanitize-html";
 
 const createShortUrl = async (req, res) => {
@@ -13,14 +14,7 @@ const createShortUrl = async (req, res) => {
     const findUrl = await Url.findOne({
       longUrl: sanitizedUrl,
     });
-    const isValidUrl = (url) => {
-      try {
-        new URL(url);
-        return true;
-      } catch (error) {
-        return false;
-      }
-    };
+
     if (!req.user) {
       req.session.urlCount = (req.session.urlCount || 0) + 1;
     }
@@ -49,60 +43,72 @@ const createShortUrl = async (req, res) => {
 };
 
 const redirectUrl = async (req, res) => {
-  console.log("🔥 REDIRECT HIT:", req.params.shorturl);
+  console.log("REDIRECT HIT:", req.params.shorturl);
   const { shorturl } = req.params;
   const cached = await redisClient.get(`url:${shorturl}`);
-  if (cached) {
-    await redisClient.incr(`clickcount:${shorturl}`);
-    console.log("From Redis Cache");
-    return res.redirect(cached);
-  }
-  const urlFind = await Url.findOne({
-    shortString: shorturl,
-  });
-  if (urlFind) {
-    const validated = new URL(urlFind.longUrl);
-    await redisClient.set(`url:${shorturl}`, validated.href);
-    await redisClient.expire(`url:${shorturl}`, 86400);
-    console.log("Stored successfully in redis.");
-
-    // Real time click analytics
-    // .then is used because for redirects await does not execute fully
-    const count = redisClient.incr(`clickcount:${shorturl}`);
-    if (count === 1) {
-      await redisClient.expire(`clickcount:${shorturl}`);
+  try {
+    if (cached) {
+      await redisClient.incr(`clickcount:${shorturl}`);
+      console.log("From Redis Cache");
+      return res.redirect(cached);
     }
 
-    res.set({
-      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
-      "Surrogate-Control": "no-store",
+    const urlFind = await Url.findOne({
+      shortString: shorturl,
     });
 
-    return res.redirect(307, validated.href);
-  } else {
-    return res.send("Invalid url");
+    if (urlFind) {
+      const validated = new URL(urlFind.longUrl);
+      await redisClient.set(`url:${shorturl}`, validated.href);
+      await redisClient.expire(`url:${shorturl}`, 86400);
+      console.log("Stored successfully in redis.");
+
+      // Real time click analytics
+      // .then is used because for redirects await does not execute fully
+      const count = redisClient.incr(`clickcount:${shorturl}`);
+      if (count === 1) {
+        await redisClient.expire(`clickcount:${shorturl}`);
+      }
+
+      res.set({
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+        "Surrogate-Control": "no-store",
+      });
+
+      return res.redirect(307, validated.href);
+    } else {
+      return res.send("Invalid url");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.json({ message: error.message });
   }
 };
 
 const statsUrl = async (req, res) => {
   const { shorturl } = req.params;
 
-  const urlFind = await Url.findOne({
-    shortString: shorturl,
-  });
-
-  if (urlFind) {
-    const clickCount = await redisClient.get(`clickcount:${shorturl}`);
-
-    return res.json({
-      longUrl: urlFind.longUrl,
-      shortUrl: shorturl,
-      noOfClicks: Number(clickCount || 0),
+  try {
+    const urlFind = await Url.findOne({
+      shortString: shorturl,
     });
+
+    if (urlFind) {
+      const clickCount = await redisClient.get(`clickcount:${shorturl}`);
+
+      return res.json({
+        longUrl: urlFind.longUrl,
+        shortUrl: shorturl,
+        noOfClicks: Number(clickCount || 0),
+      });
+    }
+    return res.send("No url found");
+  } catch (error) {
+    console.log(error);
   }
-  return res.send("No url found");
 };
 
 // Get all the url created by a specific user

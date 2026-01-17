@@ -3,11 +3,12 @@ import { redisClient } from "../utils/redisClient.js";
 function rateLimiter({ limit, windowInSec }) {
   return async (req, res, next) => {
     try {
+      console.log("Rate limiter is hit: ", req.user);
       // Get the user id
-      const userId = req.user ? req.user._id : req.sessionID;
+      const userId = req.user._id;
       if (!userId)
         return res.status(401).json({
-          message: "No requests",
+          message: "You are not logged in",
         });
       const key = `rate:${userId}`;
       const count = await redisClient.incr(key);
@@ -16,7 +17,7 @@ function rateLimiter({ limit, windowInSec }) {
       }
       if (count > limit) {
         return res.status(429).json({
-          error: "Too many requests. Please try again later.",
+          error: "Too many requests. Please try again after a minute.",
         });
       }
       next();

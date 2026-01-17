@@ -1,7 +1,7 @@
 import Navbar from "./Navbar";
 import { Navigate } from "react-router-dom";
 import Hero from "./Hero";
-import CardSec from "./CardSec";
+import GuestUrlForm from "./GuestUrlForm";
 import ShowUrl from "./ShowUrl";
 import { useContext } from "react";
 import AuthContext from "../../context/AuthContext/AuthContext";
@@ -18,7 +18,7 @@ const Guest = () => {
     <div className="font-lato">
       <Navbar />
       <Hero />
-      <CardSec />
+      <GuestUrlForm />
       <ShowUrl />
     </div>
   );

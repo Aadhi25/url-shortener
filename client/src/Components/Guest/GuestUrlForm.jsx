@@ -3,7 +3,7 @@ import axios from "axios";
 import ShortUrl from "./ShortUrl";
 import UrlContext from "../../context/UrlContext/UrlContext";
 
-const CardSec = () => {
+const GuestUrlForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [errMsg, setErrMsg] = useState("");
@@ -72,4 +72,4 @@ const CardSec = () => {
   );
 };
 
-export default CardSec;
+export default GuestUrlForm;

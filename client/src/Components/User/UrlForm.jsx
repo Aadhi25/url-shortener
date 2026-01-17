@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 
 const UrlForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
   const { longUrl, setLongUrl, setShortUrl } = useContext(UrlContext);
 
   const onChangeHandler = (e) => {
@@ -20,7 +19,7 @@ const UrlForm = () => {
     // send the post request to the backend and get the short url from the backend
     try {
       setIsLoading(true);
-      const getShortUrl = await axios.post("/api/guest/create-short-url/", {
+      const getShortUrl = await axios.post("/api/user/create-short-url/", {
         longUrl: longUrl,
       });
       setShortUrl(getShortUrl.data.shortUrl);
@@ -31,7 +30,7 @@ const UrlForm = () => {
     } catch (error) {
       setIsLoading(false);
       console.log(error);
-      setErrMsg(error.response.data.message);
+      toast.error(error.response.data.error);
     }
   };
 
