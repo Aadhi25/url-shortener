@@ -7,7 +7,6 @@ const urlSchema = new Schema(
     longUrl: {
       type: String,
       required: true,
-      unique: true,
     },
     shortUrl: {
       type: String,
@@ -39,7 +38,7 @@ const urlSchema = new Schema(
   }
 );
 
-urlSchema.index({ owner: 1, createdAt: -1 });
+urlSchema.index({ owner: 1, longUrl: 1 }, { unique: true });
 
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);

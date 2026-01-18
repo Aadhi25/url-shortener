@@ -130,7 +130,11 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
               >
                 Sign Up
               </button>
+              <p>or</p>
             </form>
+            <a href="http://localhost:3000/api/auth/google">
+              Continue with Google
+            </a>
           </>
         )}
 

@@ -5,7 +5,11 @@ import {
   login,
   logout,
   verifyUser,
+  authGoogle,
+  authGoogleCallback,
+  deleteAccount,
 } from "../controllers/authController.js";
+import { checkAuthenticated } from "../middleware/checkAuth.js";
 
 router.post("/register", register);
 router.post("/verify-user", verifyUser);
@@ -30,6 +34,9 @@ router.get("/status", (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.get("/google", authGoogle);
+router.get("/google/callback", authGoogleCallback);
 router.post("/logout", logout);
+router.delete("/delete-account", checkAuthenticated, deleteAccount);
 
 export default router;

@@ -141,6 +141,21 @@ const login = async (req, res, next) => {
   })(req, res, next);
 };
 
+const authGoogle = passport.authenticate("google", {
+  scope: ["profile", "email"],
+});
+
+const authGoogleCallback = async (req, res, next) => {
+  passport.authenticate("google", { failureRedirect: "/api/auth/login" })(
+    req,
+    res,
+    () => {
+      // console.log("GOOGLE LOGIN SUCCESS:", req.user.email);
+      res.redirect("http://localhost:5173/dashboard");
+    }
+  );
+};
+
 const logout = async (req, res) => {
   req.logout(() => {
     req.session.destroy(() => {
@@ -150,4 +165,32 @@ const logout = async (req, res) => {
   });
 };
 
-export { register, login, logout, verifyUser };
+const deleteAccount = async (req, res) => {
+  const userId = req.user._id;
+  console.log(userId);
+  try {
+    // delete user and urls created by the user
+    await Url.deleteMany({ owner: userId });
+    await Auth.deleteOne({ _id: userId });
+
+    // delete the current session by logging out the user
+    req.logout(() => {
+      req.session.destroy(() => {
+        res.clearCookie("connect.sid");
+        res.json({ message: "Account deleted." });
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  register,
+  login,
+  logout,
+  verifyUser,
+  authGoogle,
+  authGoogleCallback,
+  deleteAccount,
+};

@@ -6,35 +6,62 @@ const ShowUrl = () => {
 
   return (
     // Show the urls that is stored in the guest session
-    <div className="flex flex-col mx-auto w-[90%] my-10">
-      {guestUrls.length > 0 ? (
-        <div className="table w-full ...">
-          <div className="table-header-group ...">
-            <div className="table-row">
-              <div className="table-cell text-xl font-bold text-left ...">
-                Your Trial Urls
-              </div>
+    <div className="min-h-screen mx-auto w-[90%] my-10">
+      {/* Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-800">Your URLs</h1>
+      </div>
+
+      {/* Desktop / Tablet Table */}
+      <div className="hidden md:block">
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-primary shadow-md">
+          <table className="w-full text-md">
+            <thead className="text-secondary">
+              <tr>
+                <th className="px-4 py-3 text-left">Short URL</th>
+                <th className="px-4 py-3 text-left">Original URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              {guestUrls.map((url) => (
+                <tr
+                  key={url._id}
+                  className="border-t hover:bg-gray-50 transition"
+                >
+                  <td className="px-4 py-3 font-medium text-blue-600">
+                    <button
+                      onClick={() => handleRedirect(url.shortString)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accentHover hover:underline font-medium cursor-pointer"
+                    >
+                      {url.shortUrl}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 max-w-xs truncate text-gray-600">
+                    {url.longUrl}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="space-y-4 md:hidden">
+        {guestUrls.map((url) => (
+          <div
+            key={url._id}
+            className="rounded-xl border bg-white p-4 shadow-sm"
+          >
+            <div className="mb-2">
+              <p className="font-semibold text-accentHover">{url.shortUrl}</p>
+              <p className="text-sm text-gray-500 truncate">{url.longUrl}</p>
             </div>
           </div>
-          {guestUrls.map((url) => (
-            <div className="table-row-group">
-              <div className="table-row" key={url._id}>
-                <div className="mt-5 table-cell ...">
-                  <a
-                    className="text-accent text-lg font-bold"
-                    href={url.longUrl}
-                    target="_blank"
-                  >
-                    {url.shortUrl}
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No trial url found</p>
-      )}
+        ))}
+      </div>
     </div>
   );
 };

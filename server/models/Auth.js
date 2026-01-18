@@ -14,7 +14,14 @@ const AuthSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.googleId;
+    },
+  },
+  googleId: {
+    type: String,
+    index: true,
+    default: null,
   },
   paidUser: {
     type: Boolean,

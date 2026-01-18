@@ -18,15 +18,15 @@ const app = express();
 // Passport config
 passportConfig();
 
-// Middleware
-app.use(express.json());
-
 app.use(
   cors({
     origin: true,
     credentials: true,
   })
 );
+
+// Middleware
+app.use(express.json());
 
 // Session (uses redis, but DOES NOT connect it)
 const redisStore = new RedisStore({

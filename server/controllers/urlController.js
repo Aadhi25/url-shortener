@@ -13,14 +13,17 @@ const createShortUrl = async (req, res) => {
   try {
     const findUrl = await Url.findOne({
       longUrl: sanitizedUrl,
+      owner: req.user ? req.user._id : null,
+      sessionId: req.user ? null : req.sessionID,
     });
 
     if (!req.user) {
       req.session.urlCount = (req.session.urlCount || 0) + 1;
     }
     if (!isValidUrl(sanitizedUrl)) {
-      return res.status(400).send("Please input a valid URL");
+      return res.status(400).json({ message: "Please input a valid URL" });
     }
+
     if (!findUrl && isValidUrl(sanitizedUrl)) {
       const newShortUrl = await Url.create({
         longUrl: sanitizedUrl,
