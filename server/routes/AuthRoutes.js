@@ -10,6 +10,7 @@ import {
   deleteAccount,
 } from "../controllers/authController.js";
 import { checkAuthenticated } from "../middleware/checkAuth.js";
+import passport from "passport";
 
 router.post("/register", register);
 router.post("/verify-user", verifyUser);
@@ -34,8 +35,20 @@ router.get("/status", (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-router.get("/google", authGoogle);
-router.get("/google/callback", authGoogleCallback);
+router.get(
+  "/google",
+  (req, res, next) => {
+    // this temp cookie is needed because when the oauth redirect happens the req.sessionID changes
+    res.cookie("tempSessionID", req.sessionID);
+    next();
+  },
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  authGoogleCallback
+);
 router.post("/logout", logout);
 router.delete("/delete-account", checkAuthenticated, deleteAccount);
 

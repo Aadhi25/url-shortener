@@ -101,6 +101,7 @@ const login = async (req, res, next) => {
         message: info?.message || "Unable to login",
       });
     }
+    console.log("After login session:", req.sessionID);
     try {
       await Url.updateMany(
         {
@@ -141,19 +142,40 @@ const login = async (req, res, next) => {
   })(req, res, next);
 };
 
-const authGoogle = passport.authenticate("google", {
-  scope: ["profile", "email"],
-});
-
 const authGoogleCallback = async (req, res, next) => {
-  passport.authenticate("google", { failureRedirect: "/api/auth/login" })(
-    req,
-    res,
-    () => {
-      // console.log("GOOGLE LOGIN SUCCESS:", req.user.email);
-      res.redirect("http://localhost:5173/dashboard");
+  try {
+    console.log("After login session:", req.sessionID);
+    console.log(req.cookies.tempSessionID);
+    const guestSessionID = req.cookies.tempSessionID;
+    const user = req.user;
+
+    if (!user) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/?error=google-auth-failed`
+      );
     }
-  );
+
+    await Url.updateMany(
+      {
+        sessionId: guestSessionID,
+        owner: null,
+      },
+      {
+        $set: {
+          owner: user._id,
+          sessionId: null,
+        },
+      }
+    );
+    req.session.urlCount = 0;
+    res.clearCookie("tempSessionID");
+    req.session.save(() => {
+      res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+    });
+  } catch (error) {
+    console.log(error);
+    res.redirect(`${process.env.FRONTEND_URL}/?error=google-auth-failed`);
+  }
 };
 
 const logout = async (req, res) => {
@@ -190,7 +212,6 @@ export {
   login,
   logout,
   verifyUser,
-  authGoogle,
   authGoogleCallback,
   deleteAccount,
 };

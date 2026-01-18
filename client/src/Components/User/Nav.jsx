@@ -78,14 +78,14 @@ const Nav = () => {
             <span>Links</span>
           </div>
 
-          <span className="text-gray-300">|</span>
+          {/* <span className="text-gray-300">|</span>
 
           <div className="flex items-center gap-1">
             <span className="font-semibold text-gray-800">
               {analytics.totalClicks}
             </span>
             <span>Clicks</span>
-          </div>
+          </div> */}
         </div>
         {/* User Info + Sign Out */}
         <div ref={dropdownRef} className="relative">
@@ -126,18 +126,6 @@ const Nav = () => {
             </div>
           )}
         </div>
-        {/* <div className="flex items-center gap-4 text-sm">
-          <span className="text-gray-700 font-medium truncate max-w-[180px]">
-            Logged in as: {user?.profileName}
-          </span>
-
-          <button
-            onClick={handleSignOut}
-            className="bg-accent text-primary px-5 py-2 rounded-lg cursor-pointer border-none hover:bg-accentHover duration-300"
-          >
-            Sign out
-          </button>
-        </div> */}
       </nav>
     </header>
   );

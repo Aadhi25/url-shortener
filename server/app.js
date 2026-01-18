@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 import { RedisStore } from "connect-redis";
 import { redisClient } from "./utils/redisClient.js";
 import { passportConfig } from "./config/passportStrategy.js";
@@ -24,6 +25,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(cookieParser());
 
 // Middleware
 app.use(express.json());

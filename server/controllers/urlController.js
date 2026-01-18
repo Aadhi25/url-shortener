@@ -10,6 +10,7 @@ const createShortUrl = async (req, res) => {
     allowedTags: [],
     allowedAttributes: {},
   });
+  console.log("Before login session:", req.sessionID);
   try {
     const findUrl = await Url.findOne({
       longUrl: sanitizedUrl,
@@ -196,7 +197,7 @@ const getGuestUrls = async (req, res) => {
     const getUrls = await Url.find({
       sessionId: req.sessionID,
     });
-    console.log(getUrls);
+    // console.log(getUrls);
     return res.json(getUrls);
   } catch (error) {
     console.error("Error message: ", error);

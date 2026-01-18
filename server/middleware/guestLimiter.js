@@ -11,7 +11,7 @@ const guestLimiter = (limit) => {
     if (req.session.urlCount >= limit) {
       return res.status(403).json({
         message:
-          "You have reached the limit. Please log in to create more urls.",
+          "You have reached the limit. Please log in to create more urls. On logging in the urls created here will be transfered to your account",
       });
     }
 

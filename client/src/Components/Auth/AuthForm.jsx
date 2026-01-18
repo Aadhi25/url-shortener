@@ -77,6 +77,10 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
       console.log(error.response.data);
     }
   };
+
+  const handleGoogleLogin = () => {
+    window.open("/api/auth/google", "noopener,noreferrer");
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
@@ -93,7 +97,7 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
               Create account
             </h2>
 
-            <form className="space-y-4" onSubmit={handleRegisterClick}>
+            <form className="space-y-4 mb-5" onSubmit={handleRegisterClick}>
               <input
                 type="text"
                 placeholder="Profile Name"
@@ -130,11 +134,14 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
               >
                 Sign Up
               </button>
-              <p>or</p>
             </form>
-            <a href="http://localhost:3000/api/auth/google">
-              Continue with Google
-            </a>
+            <div className="border-b"></div>
+            <button
+              onClick={handleGoogleLogin}
+              className="mt-5 w-full rounded-xl bg-primary py-3 text-secondary border border-accent hover:bg-accentHover hover:text-primary cursor-pointer"
+            >
+              Sign in with Google
+            </button>
           </>
         )}
 
@@ -144,7 +151,7 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
               Login to your account
             </h2>
 
-            <form className="space-y-4" onSubmit={handleLoginClick}>
+            <form className="space-y-4 mb-5" onSubmit={handleLoginClick}>
               <input
                 type="email"
                 placeholder="Email"
@@ -171,6 +178,13 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
                 Login
               </button>
             </form>
+            <div className="border-b"></div>
+            <button
+              onClick={handleGoogleLogin}
+              className="mt-5 w-full rounded-xl bg-primary py-3 text-secondary border border-accent hover:bg-accentHover hover:text-primary cursor-pointer"
+            >
+              Sign in with Google
+            </button>
           </>
         )}
       </div>
