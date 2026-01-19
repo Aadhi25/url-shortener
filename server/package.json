@@ -7,7 +7,7 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --detectOpenHandles",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --detectOpenHandles --watchAll",
-    "start": "nodemon index"
+    "start": "node index.js"
   },
   "author": "Aadhi",
   "license": "ISC",
