@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import axios from "axios";
 import UrlContext from "../../context/UrlContext/UrlContext";
 import toast from "react-hot-toast";
@@ -7,8 +7,17 @@ const UrlTable = () => {
   const [urls, setUrls] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [stats, setStats] = useState([]);
 
   const { shortUrl } = useContext(UrlContext);
+
+  const realtimeStats = useMemo(() => {
+    const map = {};
+    stats.forEach((s) => {
+      map[s.shortString] = s.noOfClicks;
+    });
+    return map;
+  }, [stats]);
 
   useEffect(() => {
     const getUrls = async () => {
@@ -26,6 +35,21 @@ const UrlTable = () => {
 
     getUrls();
   }, [shortUrl, page]);
+
+  useEffect(() => {
+    const getStats = async () => {
+      try {
+        const res = await axios.get("/api/user/stats");
+        setStats(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getStats();
+    const id = setInterval(getStats, 10000);
+    return () => clearInterval(id);
+  }, []);
 
   const handleRedirect = (shortCode) => {
     window.open(
@@ -84,7 +108,7 @@ const UrlTable = () => {
                     {url.longUrl}
                   </td>
                   <td className="px-4 py-3 text-center font-medium">
-                    {url.noOfClicks}
+                    {realtimeStats[url.shortString] || url.noOfClicks}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button

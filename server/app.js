@@ -1,4 +1,5 @@
 // src/app.js
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import session from "express-session";
@@ -15,6 +16,7 @@ import authRoutes from "./routes/AuthRoutes.js";
 import userUrlRoutes from "./routes/UserUrlRoutes.js";
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
 
 // Passport config
 passportConfig();
@@ -23,7 +25,7 @@ app.use(
   cors({
     origin: true,
     credentials: true,
-  })
+  }),
 );
 
 app.use(cookieParser());
@@ -45,11 +47,11 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
-      secure: false,
+      secure: isProduction,
       httpOnly: true,
       sameSite: "lax",
     },
-  })
+  }),
 );
 
 app.use(passport.initialize());

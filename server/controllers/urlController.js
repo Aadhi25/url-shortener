@@ -68,7 +68,6 @@ const redirectUrl = async (req, res) => {
       console.log("Stored successfully in redis.");
 
       // Real time click analytics
-      // .then is used because for redirects await does not execute fully
       const count = redisClient.incr(`clickcount:${shorturl}`);
       if (count === 1) {
         await redisClient.expire(`clickcount:${shorturl}`);
@@ -93,23 +92,23 @@ const redirectUrl = async (req, res) => {
 };
 
 const statsUrl = async (req, res) => {
-  const { shorturl } = req.params;
-
   try {
-    const urlFind = await Url.findOne({
-      shortString: shorturl,
+    // Get the urls and add it to redis key
+    const shortUrls = await Url.find({ owner: req.user._id }).select(
+      "shortString noOfClicks"
+    );
+    const keys = shortUrls.map((url) => {
+      return `clickcount:${url.shortString}`;
+    });
+    const clicks = await redisClient.mGet(keys);
+    const stats = shortUrls.map((url, idx) => {
+      return {
+        shortString: url.shortString,
+        noOfClicks: url.noOfClicks + Number(clicks[idx]) || 0,
+      };
     });
 
-    if (urlFind) {
-      const clickCount = await redisClient.get(`clickcount:${shorturl}`);
-
-      return res.json({
-        longUrl: urlFind.longUrl,
-        shortUrl: shorturl,
-        noOfClicks: Number(clickCount || 0),
-      });
-    }
-    return res.send("No url found");
+    return res.json(stats);
   } catch (error) {
     console.log(error);
   }
@@ -186,6 +185,7 @@ const deleteUserUrl = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.json({ message: "Oops. Deletion Unsuccesful" });
   }
 };
 

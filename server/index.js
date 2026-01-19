@@ -1,5 +1,4 @@
 // src/index.js
-import "dotenv/config";
 import mongoose from "mongoose";
 import cron from "node-cron";
 
@@ -12,7 +11,7 @@ const port = 3000;
 await mongoose.connect(process.env.MONGO_CON_STRING);
 console.log("MongoDB connected");
 
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/9 * * * *", async () => {
   console.log("Cron running");
   await syncToDb();
 });

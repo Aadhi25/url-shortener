@@ -5,7 +5,6 @@ import {
   login,
   logout,
   verifyUser,
-  authGoogle,
   authGoogleCallback,
   deleteAccount,
 } from "../controllers/authController.js";

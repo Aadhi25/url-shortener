@@ -16,7 +16,7 @@ router.post(
   rateLimiter({ limit: 10, windowInSec: 60 }),
   createShortUrl
 );
-router.get("/stats/:shorturl", statsUrl);
+router.get("/stats", statsUrl);
 router.get("/redirect/:shorturl", redirectUrl);
 router.get("/get-url-by-user", getUserUrls);
 router.delete("/delete-url/:urlId", deleteUserUrl);
