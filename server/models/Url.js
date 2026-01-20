@@ -46,8 +46,7 @@ urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);
   this.shortString = hexToBase62(shortId);
   this.shortUrl =
-    "https://enthusiastic-playfulness-production.up.railway.app/" +
-    hexToBase62(shortId);
+    "https://url-shortener-8wql.onrender.com/" + hexToBase62(shortId);
   next();
 });
 
