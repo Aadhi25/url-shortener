@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 
 const sendVerifyEmail = async (email, verifyUrl) => {
   const transporter = nodemailer.createTransport({
+    secure: true,
     service: "gmail",
     auth: {
       user: process.env.GOOGLE_EMAIL,

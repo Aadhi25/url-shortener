@@ -113,7 +113,7 @@ const login = async (req, res, next) => {
             owner: user._id,
             sessionId: null,
           },
-        }
+        },
       );
 
       req.session.urlCount = 0;
@@ -151,7 +151,7 @@ const authGoogleCallback = async (req, res, next) => {
 
     if (!user) {
       return res.redirect(
-        `${process.env.FRONTEND_URL}/?error=google-auth-failed`
+        `${process.env.FRONTEND_URL}/?error=google-auth-failed`,
       );
     }
 
@@ -165,7 +165,7 @@ const authGoogleCallback = async (req, res, next) => {
           owner: user._id,
           sessionId: null,
         },
-      }
+      },
     );
     req.session.urlCount = 0;
     res.clearCookie("tempSessionID");
