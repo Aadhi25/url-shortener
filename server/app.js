@@ -18,17 +18,15 @@ import userUrlRoutes from "./routes/UserUrlRoutes.js";
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 
-// Passport config
-passportConfig();
-
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+app.options("*", cors());
+// Passport config
+passportConfig();
 
 // app.use(cookieParser());
 
