@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import passport from "passport";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import { RedisStore } from "connect-redis";
 import { redisClient } from "./utils/redisClient.js";
 import { passportConfig } from "./config/passportStrategy.js";
@@ -30,8 +30,7 @@ app.use(
   }),
 );
 
-app.options("*", cors());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // Middleware
 app.use(express.json());

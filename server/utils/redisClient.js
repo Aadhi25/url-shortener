@@ -24,6 +24,8 @@ redisClient.on("end", () => {
   console.log("Redis disconnected");
 });
 
-await redisClient.connect();
+redisClient.connect().catch((err) => {
+  console.error("Redis connection failed:", err);
+});
 
 export { redisClient };
