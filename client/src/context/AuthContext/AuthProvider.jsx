@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
-import axios from "axios";
+import axios from "../../api/axios";
 
 const AuthProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,12 +12,9 @@ const AuthProvider = ({ children }) => {
     console.log("Useffect is running");
     const getUserStatus = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/auth/status`,
-          {
-            withCredentials: true,
-          },
-        );
+        const res = await axios.get(`/api/auth/status`, {
+          withCredentials: true,
+        });
         console.log(res.data.user);
         setUser(res.data.user);
       } catch (error) {
@@ -32,7 +29,7 @@ const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`);
+      await axios.post(`/api/auth/logout`);
     } finally {
       setUser(null);
     }

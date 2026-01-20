@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthContext from "../../context/AuthContext/AuthContext";
@@ -52,7 +52,7 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
       console.log(registerUser.data);
       onClose();
       toast.success(
-        "Successfully Registerd. Verify your account by clicking the link in your email."
+        "Successfully Registerd. Verify your account by clicking the link in your email.",
       );
     } catch (error) {
       console.log(error);
@@ -79,7 +79,10 @@ const AuthForm = ({ isOpen, onClose, modalContent }) => {
   };
 
   const handleGoogleLogin = () => {
-    window.open("/api/auth/google", "noopener,noreferrer");
+    window.open(
+      `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`,
+      "noopener,noreferrer",
+    );
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">

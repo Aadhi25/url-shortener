@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useMemo } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import UrlContext from "../../context/UrlContext/UrlContext";
 import toast from "react-hot-toast";
 
@@ -23,7 +23,7 @@ const UrlTable = () => {
     const getUrls = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/user/get-url-by-user?page=${page}&limit=7`,
+          `/api/user/get-url-by-user?page=${page}&limit=7`,
         );
         console.log(res.data.urls);
         setUrls(res.data.urls);
@@ -39,9 +39,7 @@ const UrlTable = () => {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/user/stats`,
-        );
+        const res = await axios.get(`/api/user/stats`);
         setStats(res.data);
       } catch (error) {
         console.log(error);
@@ -63,9 +61,7 @@ const UrlTable = () => {
 
   const deleteUrl = async (urlId) => {
     try {
-      const res = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/delete-url/${urlId}`,
-      );
+      const res = await axios.delete(`/api/user/delete-url/${urlId}`);
       toast.success(res.data.message);
       setUrls((prevState) => prevState.filter((url) => url._id !== urlId));
     } catch (error) {

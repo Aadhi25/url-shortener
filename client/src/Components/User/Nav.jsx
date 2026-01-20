@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext/AuthContext";
 import toast from "react-hot-toast";
-import axios from "axios";
+import axios from "../../api/axios";
 import UrlContext from "../../context/UrlContext/UrlContext";
 
 const Nav = () => {
@@ -31,9 +31,7 @@ const Nav = () => {
   useEffect(() => {
     const getUrlAnalytics = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/user/get-url-by-user`,
-        );
+        const res = await axios.get(`/api/user/get-url-by-user`);
         setAnalytics({
           totalLinks: res.data.noOfUrls,
           totalClicks: res.data.totalClicksOfAllUrls,
@@ -53,12 +51,7 @@ const Nav = () => {
   };
 
   const handleDelete = async () => {
-    const res = await axios.delete(
-      `${import.meta.env.VITE_BACKEND_URL}/api/auth/delete-account`,
-      {
-        withCredentials: true,
-      },
-    );
+    const res = await axios.delete(`/api/auth/delete-account`);
     console.log(res.data);
     toast.success(res.data.message);
     window.location.href = "/";

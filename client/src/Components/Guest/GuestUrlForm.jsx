@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
-import axios from "axios";
 import ShortUrl from "./ShortUrl";
 import UrlContext from "../../context/UrlContext/UrlContext";
+import axios from "../../api/axios";
 
 const GuestUrlForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,12 +24,9 @@ const GuestUrlForm = () => {
     try {
       setShow(true);
       setIsLoading(true);
-      const getShortUrl = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/guest/create-short-url/`,
-        {
-          longUrl: longUrl,
-        },
-      );
+      const getShortUrl = await axios.post(`/api/guest/create-short-url/`, {
+        longUrl: longUrl,
+      });
       setShortUrl(getShortUrl.data.shortUrl);
       setGuestUrls((prevState) => [...prevState, getShortUrl.data]);
       setIsLoading(false);
