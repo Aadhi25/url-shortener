@@ -59,6 +59,11 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use((req, res, next) => {
+  console.log("🌐 Incoming:", req.method, req.path);
+  next();
+});
 // Routes
 app.use("/api/guest", urlRoutes);
 app.use("/api/auth", authRoutes);
