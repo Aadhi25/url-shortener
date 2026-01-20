@@ -19,9 +19,12 @@ const sendVerifyEmail = async (email, verifyUrl) => {
     <a href=${verifyUrl}>Verify your Email</a>
     `,
   };
-
-  const response = await transporter.sendMail(mailOptions);
-  console.log(response);
+  try {
+    const response = await transporter.sendMail(mailOptions);
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export { sendVerifyEmail };
