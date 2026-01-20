@@ -15,6 +15,7 @@ const urlSchema = new Schema(
     shortString: {
       type: String,
       unique: true,
+      index: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,7 +39,8 @@ const urlSchema = new Schema(
   },
 );
 
-urlSchema.index({ owner: 1, longUrl: 1 }, { unique: true });
+urlSchema.index({ owner: 1, longUrl: 1 }, { unique: true, sparse: true });
+urlSchema.index({ sessionId: 1, longUrl: 1 }, { unique: true, sparse: true });
 
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);

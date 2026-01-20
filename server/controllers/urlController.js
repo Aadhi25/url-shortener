@@ -16,7 +16,7 @@ const createShortUrl = async (req, res) => {
       longUrl: sanitizedUrl,
       owner: req.user ? req.user._id : null,
       sessionId: req.user ? null : req.sessionID,
-    });
+    }).lean();
 
     if (!req.user) {
       req.session.urlCount = (req.session.urlCount || 0) + 1;
@@ -59,7 +59,7 @@ const redirectUrl = async (req, res) => {
 
     const urlFind = await Url.findOne({
       shortString: shorturl,
-    });
+    }).lean();
 
     if (urlFind) {
       const validated = new URL(urlFind.longUrl);
@@ -94,9 +94,9 @@ const redirectUrl = async (req, res) => {
 const statsUrl = async (req, res) => {
   try {
     // Get the urls and add it to redis key
-    const shortUrls = await Url.find({ owner: req.user._id }).select(
-      "shortString noOfClicks"
-    );
+    const shortUrls = await Url.find({ owner: req.user._id })
+      .select("shortString noOfClicks")
+      .lean();
     const keys = shortUrls.map((url) => {
       return `clickcount:${url.shortString}`;
     });
@@ -179,7 +179,7 @@ const getUserUrls = async (req, res) => {
 const deleteUserUrl = async (req, res) => {
   const { urlId } = req.params;
   try {
-    await Url.deleteOne({ _id: urlId });
+    await Url.deleteOne({ _id: urlId }).lean();
     return res.json({
       message: "Deletion Successfull",
     });
@@ -196,7 +196,7 @@ const getGuestUrls = async (req, res) => {
   try {
     const getUrls = await Url.find({
       sessionId: req.sessionID,
-    });
+    }).lean();
     // console.log(getUrls);
     return res.json(getUrls);
   } catch (error) {
