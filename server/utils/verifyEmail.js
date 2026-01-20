@@ -1,30 +1,22 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerifyEmail = async (email, verifyUrl) => {
-  const transporter = nodemailer.createTransport({
-    secure: true,
-    service: "gmail",
-    auth: {
-      user: process.env.GOOGLE_EMAIL,
-      pass: process.env.GOOGLE_APP_PASSWORD,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.GOOGLE_EMAIL,
+  const { data, error } = await resend.emails.send({
+    from: "Shrink.It <verify@shrinkit.co.in>",
     to: email,
-    subject: "Verify your Email",
+    subject: "Verify Email to access your account",
     html: `<p>Click this link below to verify:</p>
     <br>
     <a href=${verifyUrl}>Verify your Email</a>
     `,
-  };
-  try {
-    const response = await transporter.sendMail(mailOptions);
-    console.log(response);
-  } catch (error) {
-    console.log(error);
+  });
+
+  if (error) {
+    return console.log(error);
   }
+  console.log({ data });
 };
 
 export { sendVerifyEmail };
