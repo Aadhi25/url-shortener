@@ -19,9 +19,12 @@ const UrlForm = () => {
     // send the post request to the backend and get the short url from the backend
     try {
       setIsLoading(true);
-      const getShortUrl = await axios.post("/api/user/create-short-url/", {
-        longUrl: longUrl,
-      });
+      const getShortUrl = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/create-short-url/`,
+        {
+          longUrl: longUrl,
+        },
+      );
       setShortUrl(getShortUrl.data.shortUrl);
       console.log(getShortUrl.data.shortUrl);
       setIsLoading(false);

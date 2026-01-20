@@ -31,7 +31,9 @@ const Nav = () => {
   useEffect(() => {
     const getUrlAnalytics = async () => {
       try {
-        const res = await axios.get("/api/user/get-url-by-user");
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/user/get-url-by-user`,
+        );
         setAnalytics({
           totalLinks: res.data.noOfUrls,
           totalClicks: res.data.totalClicksOfAllUrls,
@@ -52,13 +54,12 @@ const Nav = () => {
 
   const handleDelete = async () => {
     const res = await axios.delete(
-      "http://localhost:3000/api/auth/delete-account",
+      `${import.meta.env.VITE_BACKEND_URL}/api/auth/delete-account`,
       {
         withCredentials: true,
-      }
+      },
     );
     console.log(res.data);
-    // await signOut();
     toast.success(res.data.message);
     window.location.href = "/";
   };

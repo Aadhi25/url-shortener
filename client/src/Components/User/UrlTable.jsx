@@ -23,7 +23,7 @@ const UrlTable = () => {
     const getUrls = async () => {
       try {
         const res = await axios.get(
-          `/api/user/get-url-by-user?page=${page}&limit=7`
+          `${import.meta.env.VITE_BACKEND_URL}/api/user/get-url-by-user?page=${page}&limit=7`,
         );
         console.log(res.data.urls);
         setUrls(res.data.urls);
@@ -39,7 +39,9 @@ const UrlTable = () => {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await axios.get("/api/user/stats");
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/user/stats`,
+        );
         setStats(res.data);
       } catch (error) {
         console.log(error);
@@ -53,15 +55,17 @@ const UrlTable = () => {
 
   const handleRedirect = (shortCode) => {
     window.open(
-      `/api/user/redirect/${shortCode}`,
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/redirect/${shortCode}`,
       "_blank",
-      "noopener,noreferrer"
+      "noopener,noreferrer",
     );
   };
 
   const deleteUrl = async (urlId) => {
     try {
-      const res = await axios.delete(`/api/user/delete-url/${urlId}`);
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/delete-url/${urlId}`,
+      );
       toast.success(res.data.message);
       setUrls((prevState) => prevState.filter((url) => url._id !== urlId));
     } catch (error) {

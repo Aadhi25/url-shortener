@@ -35,7 +35,7 @@ const urlSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 urlSchema.index({ owner: 1, longUrl: 1 }, { unique: true });
@@ -43,7 +43,9 @@ urlSchema.index({ owner: 1, longUrl: 1 }, { unique: true });
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);
   this.shortString = hexToBase62(shortId);
-  this.shortUrl = "http://localhost:3000/" + hexToBase62(shortId);
+  this.shortUrl =
+    "https://enthusiastic-playfulness-production.up.railway.app/" +
+    hexToBase62(shortId);
   next();
 });
 
