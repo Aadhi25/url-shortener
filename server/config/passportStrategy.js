@@ -18,8 +18,8 @@ export function passportConfig() {
         if (!bcrypt.compareSync(password, user.password))
           return done(null, false);
         return done(null, user);
-      }
-    )
+      },
+    ),
   );
 
   passport.use(
@@ -27,7 +27,7 @@ export function passportConfig() {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/api/auth/google/callback", // FULL URL
+        callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`, // FULL URL
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -57,8 +57,8 @@ export function passportConfig() {
         } catch (err) {
           return done(err, null);
         }
-      }
-    )
+      },
+    ),
   );
 
   passport.serializeUser((user, done) => {
