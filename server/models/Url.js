@@ -45,7 +45,7 @@ urlSchema.index({ sessionId: 1, longUrl: 1 }, { unique: true, sparse: true });
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);
   this.shortString = hexToBase62(shortId);
-  this.shortUrl = `${process.env.BACKEND_URL}/` + hexToBase62(shortId);
+  this.shortUrl = `${process.env.FRONTEND_URL}/` + hexToBase62(shortId);
   next();
 });
 

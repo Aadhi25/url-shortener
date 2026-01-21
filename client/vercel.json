@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/:shortCode",
+      "destination": "https://api.shrinkit.co.in/:shortCode"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
