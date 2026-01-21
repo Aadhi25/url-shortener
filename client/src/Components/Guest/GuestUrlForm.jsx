@@ -8,8 +8,14 @@ const GuestUrlForm = () => {
   const [show, setShow] = useState(false);
   const [errMsg, setErrMsg] = useState("");
 
-  const { longUrl, setLongUrl, shortUrl, setShortUrl, setGuestUrls } =
-    useContext(UrlContext);
+  const {
+    longUrl,
+    setLongUrl,
+    shortUrl,
+    setShortUrl,
+    setGuestUrls,
+    setShortString,
+  } = useContext(UrlContext);
 
   const onChangeHandler = (e) => {
     setLongUrl(e.target.value);
@@ -28,6 +34,7 @@ const GuestUrlForm = () => {
         longUrl: longUrl,
       });
       setShortUrl(getShortUrl.data.shortUrl);
+      setShortString(getShortUrl.data.shortString);
       setGuestUrls((prevState) => [...prevState, getShortUrl.data]);
       setIsLoading(false);
     } catch (error) {

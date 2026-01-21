@@ -2,7 +2,7 @@ import { useContext } from "react";
 import UrlContext from "../../context/UrlContext/UrlContext";
 
 const ShowUrl = () => {
-  const { guestUrls } = useContext(UrlContext);
+  const { guestUrls, handleRedirect } = useContext(UrlContext);
 
   return (
     // Show the urls that is stored in the guest session
@@ -56,7 +56,14 @@ const ShowUrl = () => {
             className="rounded-xl border bg-white p-4 shadow-sm"
           >
             <div className="mb-2">
-              <p className="font-semibold text-accentHover">{url.shortUrl}</p>
+              <button
+                onClick={() => handleRedirect(url.shortString)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accentHover hover:underline font-medium cursor-pointer"
+              >
+                {url.shortUrl}
+              </button>
               <p className="text-sm text-gray-500 truncate">{url.longUrl}</p>
             </div>
           </div>

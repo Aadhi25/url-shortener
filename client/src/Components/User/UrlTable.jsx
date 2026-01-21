@@ -9,7 +9,7 @@ const UrlTable = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [stats, setStats] = useState([]);
 
-  const { shortUrl } = useContext(UrlContext);
+  const { shortUrl, handleRedirect } = useContext(UrlContext);
 
   const realtimeStats = useMemo(() => {
     const map = {};
@@ -50,14 +50,6 @@ const UrlTable = () => {
     const id = setInterval(getStats, 10000);
     return () => clearInterval(id);
   }, []);
-
-  const handleRedirect = (shortCode) => {
-    window.open(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/redirect/${shortCode}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
-  };
 
   const deleteUrl = async (urlId) => {
     try {
@@ -133,7 +125,14 @@ const UrlTable = () => {
             className="rounded-xl border bg-white p-4 shadow-sm"
           >
             <div className="mb-2">
-              <p className="font-semibold text-accentHover">{url.shortUrl}</p>
+              <button
+                onClick={() => handleRedirect(url.shortString)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accentHover hover:underline font-medium cursor-pointer"
+              >
+                {url.shortUrl}
+              </button>
               <p className="text-sm text-gray-500 truncate">{url.longUrl}</p>
             </div>
 
@@ -141,7 +140,10 @@ const UrlTable = () => {
               <span className="text-sm text-gray-600">
                 👁 {url.noOfClicks} clicks
               </span>
-              <button className="rounded-lg px-3 py-1 text-sm text-red-600 cursor-pointer">
+              <button
+                onClick={() => deleteUrl(url._id)}
+                className="rounded-lg px-3 py-1 text-sm text-red-600 cursor-pointer"
+              >
                 Delete
               </button>
             </div>

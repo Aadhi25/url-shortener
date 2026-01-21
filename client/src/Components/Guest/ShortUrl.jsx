@@ -2,7 +2,8 @@ import { useContext } from "react";
 import UrlContext from "../../context/UrlContext/UrlContext";
 
 const ShortUrl = ({ errMsg, isLoading }) => {
-  const { shortUrl, longUrl } = useContext(UrlContext);
+  const { shortUrl, shortString, handleRedirect } = useContext(UrlContext);
+
   if (errMsg.length >= 1) {
     return <h3 className="text-lg font-bold mt-5 text-secondary">{errMsg}</h3>;
   }
@@ -12,8 +13,8 @@ const ShortUrl = ({ errMsg, isLoading }) => {
   } else {
     return (
       <a
+        onClick={() => handleRedirect(shortString)}
         className="text-accent text-lg font-bold mt-5"
-        href={longUrl}
         target="_blank"
       >
         {shortUrl}

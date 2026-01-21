@@ -45,8 +45,7 @@ urlSchema.index({ sessionId: 1, longUrl: 1 }, { unique: true, sparse: true });
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);
   this.shortString = hexToBase62(shortId);
-  this.shortUrl =
-    "https://url-shortener-8wql.onrender.com/" + hexToBase62(shortId);
+  this.shortUrl = "http://localhost:3000/" + hexToBase62(shortId);
   next();
 });
 

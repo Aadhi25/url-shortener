@@ -5,6 +5,7 @@ import UrlContext from "./UrlContext";
 const UrlProvider = ({ children }) => {
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
+  const [shortString, setShortString] = useState("");
   const [session, setSession] = useState({
     isAuthenticated: false,
     urlCount: 0,
@@ -38,6 +39,15 @@ const UrlProvider = ({ children }) => {
     };
     getSessionInfo();
   }, []);
+
+  const handleRedirect = (shortCode) => {
+    window.open(
+      `${import.meta.env.VITE_BACKEND_URL}/${shortCode}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
   return (
     <UrlContext.Provider
       value={{
@@ -49,6 +59,9 @@ const UrlProvider = ({ children }) => {
         setSession,
         guestUrls,
         setGuestUrls,
+        shortString,
+        setShortString,
+        handleRedirect,
       }}
     >
       {children}
