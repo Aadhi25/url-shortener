@@ -1,7 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/((?!dashboard|auth|favicon.ico|.*\\..*).*)",
+      "source": "/dashboard/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!favicon.ico|.*\\..*).*)",
       "destination": "https://api.shrinkit.co.in/:1"
     },
     {
