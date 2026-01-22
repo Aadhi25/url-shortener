@@ -100,7 +100,7 @@ const redirectUrl = async (req, res) => {
 
       return res.redirect(307, validated.href);
     } else {
-      return res.send("Invalid url");
+      return res.json({ message: "Invalid url" });
     }
   } catch (error) {
     console.log(error);

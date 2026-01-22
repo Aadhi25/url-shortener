@@ -9,10 +9,6 @@
       "destination": "/index.html"
     },
     {
-      "source": "/((?!favicon.ico|.*\\..*).*)",
-      "destination": "https://api.shrinkit.co.in/:1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
