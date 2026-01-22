@@ -48,6 +48,7 @@ const createShortUrl = async (req, res) => {
 
 const redirectUrl = async (req, res) => {
   console.log("REDIRECT HIT:", req.params.shorturl);
+  const reservedPaths = ["dashboard", "auth"];
   const { shorturl } = req.params;
   const cached = await redisClient.get(`url:${shorturl}`);
   try {
@@ -55,6 +56,10 @@ const redirectUrl = async (req, res) => {
       await redisClient.incr(`clickcount:${shorturl}`);
       console.log("From Redis Cache");
       return res.redirect(cached);
+    }
+
+    if (reservedPaths.includes(shorturl)) {
+      return res.status(404).json({ message: "Not a short url" });
     }
 
     const urlFind = await Url.findOne({
