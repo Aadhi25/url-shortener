@@ -48,7 +48,16 @@ const createShortUrl = async (req, res) => {
 
 const redirectUrl = async (req, res) => {
   console.log("REDIRECT HIT:", req.params.shorturl);
-  const reservedPaths = ["dashboard", "auth"];
+  const reservedPaths = [
+    "dashboard",
+    "auth",
+    "static",
+    "favicon.ico",
+    "manifest.json",
+    "robots.txt",
+    "sitemap.xml",
+  ];
+  const reservedExt = [".js", ".css", ".png", ".jpg", ".map"];
   const { shorturl } = req.params;
   const cached = await redisClient.get(`url:${shorturl}`);
   try {
@@ -58,8 +67,11 @@ const redirectUrl = async (req, res) => {
       return res.redirect(cached);
     }
 
-    if (reservedPaths.includes(shorturl)) {
-      return res.status(404).json({ message: "Not a short url" });
+    if (
+      reservedPaths.includes(shorturl) ||
+      reservedExtensions.some((ext) => shorturl.endsWith(ext))
+    ) {
+      return res.status(400).json({ message: "Not a short url" });
     }
 
     const urlFind = await Url.findOne({

@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/((?!dashboard|auth|static|favicon.ico|manifest.json|logo).*)(:path*)",
-      "destination": "https://api.shrinkit.co.in/:path*"
+      "source": "/((?!dashboard|auth|favicon.ico|.*\\..*).*)",
+      "destination": "https://api.shrinkit.co.in/:1"
     },
     {
       "source": "/(.*)",
