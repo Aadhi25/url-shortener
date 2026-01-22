@@ -35,7 +35,13 @@ const GuestUrlForm = () => {
       });
       setShortUrl(getShortUrl.data.shortUrl);
       setShortString(getShortUrl.data.shortString);
-      setGuestUrls((prevState) => [...prevState, getShortUrl.data]);
+      setGuestUrls((prevState) => {
+        const urlExist = prevState.some(
+          (url) => url._id === getShortUrl.data._id,
+        );
+        if (urlExist) return prevState;
+        return [getShortUrl.data, ...prevState];
+      });
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

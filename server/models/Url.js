@@ -39,8 +39,25 @@ const urlSchema = new Schema(
   },
 );
 
-urlSchema.index({ owner: 1, longUrl: 1 }, { unique: true, sparse: true });
-urlSchema.index({ sessionId: 1, longUrl: 1 }, { unique: true, sparse: true });
+urlSchema.index(
+  { owner: 1, longUrl: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      owner: { $exists: true, $ne: null },
+    },
+  },
+);
+
+urlSchema.index(
+  { sessionId: 1, longUrl: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      sessionId: { $exists: true, $ne: null },
+    },
+  },
+);
 
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);

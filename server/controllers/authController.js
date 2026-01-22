@@ -4,6 +4,7 @@ import Url from "../models/Url.js";
 import { sendVerifyEmail } from "../utils/verifyEmail.js";
 import validator from "validator";
 import crypto from "crypto";
+import mongoose from "mongoose";
 
 const register = async (req, res) => {
   // Get the user email and password
@@ -96,29 +97,60 @@ const login = async (req, res, next) => {
   passport.authenticate("local", async (err, user, info) => {
     if (err) return next(err);
 
+    const userId = user._id;
     if (!user) {
       return res.status(401).json({
         message: info?.message || "Unable to login",
       });
     }
-    console.log("After login session:", req.sessionID);
+    console.log("After login: ", req.sessionID);
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-      await Url.updateMany(
+      const guestUrls = await Url.find(
         {
           sessionId: req.sessionID,
-          owner: null,
         },
-        {
-          $set: {
-            owner: user._id,
-            sessionId: null,
-          },
-        },
+        null,
+        { session },
       );
 
+      for (const guestUrl of guestUrls) {
+        const userHasUrl = await Url.findOne(
+          { longUrl: guestUrl.longUrl, owner: userId },
+          null,
+          { session },
+        );
+
+        // ALWAYS remove guest copy
+        await Url.deleteOne({ _id: guestUrl._id }, { session });
+
+        // Only create if user does not already have it
+        if (!userHasUrl) {
+          await Url.create(
+            [
+              {
+                longUrl: guestUrl.longUrl,
+                shortString: guestUrl.shortString,
+                owner: userId,
+              },
+            ],
+            { session },
+          );
+        }
+      }
+
+      // set the guest url count to 0;
       req.session.urlCount = 0;
+      await session.commitTransaction();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      await session.abortTransaction();
+      res.redirect(
+        `${process.env.FRONTEND_URL}/dashboard?error=migration-failed`,
+      );
+    } finally {
+      session.endSession();
     }
 
     req.logIn(user, (err) => {
@@ -143,38 +175,68 @@ const login = async (req, res, next) => {
 };
 
 const authGoogleCallback = async (req, res, next) => {
+  console.log("After login:", req.sessionID);
+  const guestSessionID = req.cookies.tempSessionID;
+  console.log(guestSessionID);
+
+  const user = req.user;
+  const userId = req.user._id;
+
+  if (!user) {
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/?error=google-auth-failed`,
+    );
+  }
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    console.log("After login session:", req.sessionID);
-    console.log(req.cookies.tempSessionID);
-    const guestSessionID = req.cookies.tempSessionID;
-    const user = req.user;
-
-    if (!user) {
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/?error=google-auth-failed`,
-      );
-    }
-
-    await Url.updateMany(
+    const guestUrls = await Url.find(
       {
         sessionId: guestSessionID,
-        owner: null,
       },
-      {
-        $set: {
-          owner: user._id,
-          sessionId: null,
-        },
-      },
+      null,
+      { session },
     );
+
+    for (const guestUrl of guestUrls) {
+      const userHasUrl = await Url.findOne(
+        { longUrl: guestUrl.longUrl, owner: userId },
+        null,
+        { session },
+      );
+
+      await Url.deleteOne({ _id: guestUrl._id }, { session });
+
+      // create url if user does not already have it
+      if (!userHasUrl) {
+        await Url.create(
+          [
+            {
+              longUrl: guestUrl.longUrl,
+              shortString: guestUrl.shortString,
+              owner: userId,
+            },
+          ],
+          { session },
+        );
+      }
+    }
+
+    // set the guest url count to 0;
+    await session.commitTransaction();
     req.session.urlCount = 0;
     res.clearCookie("tempSessionID");
     req.session.save(() => {
       res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
     });
   } catch (error) {
-    console.log(error);
-    res.redirect(`${process.env.FRONTEND_URL}/?error=google-auth-failed`);
+    console.error(error);
+    await session.abortTransaction();
+    res.redirect(
+      `${process.env.FRONTEND_URL}/dashboard?error=migration-failed`,
+    );
+  } finally {
+    session.endSession();
   }
 };
 

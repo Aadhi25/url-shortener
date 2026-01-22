@@ -12,31 +12,49 @@ const createShortUrl = async (req, res) => {
   });
   console.log("Before login session:", req.sessionID);
   try {
-    const findUrl = await Url.findOne({
-      longUrl: sanitizedUrl,
-      owner: req.user ? req.user._id : null,
-      sessionId: req.user ? null : req.sessionID,
-    }).lean();
+    const owner = req.user ? req.user._id : null;
+    const sessionId = req.user ? null : req.sessionID;
+    let findUrl;
 
-    if (!req.user) {
-      req.session.urlCount = (req.session.urlCount || 0) + 1;
+    if (owner) {
+      findUrl = await Url.findOne({
+        longUrl: sanitizedUrl,
+        owner: owner,
+      });
+    } else {
+      findUrl = await Url.findOne({
+        longUrl: sanitizedUrl,
+        sessionId: sessionId,
+      });
     }
+
     if (!isValidUrl(sanitizedUrl)) {
       return res.status(400).json({ message: "Please input a valid URL" });
     }
 
-    if (!findUrl && isValidUrl(sanitizedUrl)) {
-      const newShortUrl = await Url.create({
-        longUrl: sanitizedUrl,
-        shortUrl,
-        owner: req.user?._id || null,
-        sessionId: req.user ? null : req.sessionID,
-      });
-      console.log(newShortUrl);
-      return res.status(200).json(newShortUrl);
-    } else {
+    if (findUrl) {
       console.log(findUrl);
       return res.status(200).json(findUrl);
+    }
+
+    if (!findUrl && isValidUrl(sanitizedUrl)) {
+      let newShortUrl;
+      if (owner) {
+        newShortUrl = await Url.create({
+          longUrl: sanitizedUrl,
+          shortUrl: shortUrl,
+          owner: req.user?._id,
+        });
+        return res.status(200).json(newShortUrl);
+      } else {
+        newShortUrl = await Url.create({
+          longUrl: sanitizedUrl,
+          shortUrl: shortUrl,
+          sessionId: sessionId,
+        });
+        req.session.urlCount = (req.session.urlCount || 0) + 1;
+        return res.status(200).json(newShortUrl);
+      }
     }
   } catch (error) {
     console.log(error);
