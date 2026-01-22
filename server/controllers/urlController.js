@@ -69,7 +69,7 @@ const redirectUrl = async (req, res) => {
 
     if (
       reservedPaths.includes(shorturl) ||
-      reservedExtensions.some((ext) => shorturl.endsWith(ext))
+      reservedExt.some((ext) => shorturl.endsWith(ext))
     ) {
       return res.status(400).json({ message: "Not a short url" });
     }
