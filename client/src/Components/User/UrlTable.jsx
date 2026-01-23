@@ -163,10 +163,16 @@ const UrlTable = () => {
                   👁 {url.noOfClicks} clicks
                 </span>
                 <button
-                  onClick={() => deleteUrl(url._id)}
-                  className="rounded-lg px-3 py-1 text-sm text-red-600 cursor-pointer"
+                  onClick={() => copyToClipboard(url.shortUrl)}
+                  className="rounded-lg px-3 py-1 text-blue-600 cursor-pointer hover:bg-blue-50"
                 >
-                  Delete
+                  <IoCopy />
+                </button>
+                <button
+                  onClick={() => deleteUrl(url._id)}
+                  className="rounded-lg px-3 py-1 text-red-600 cursor-pointer hover:bg-blue-50"
+                >
+                  <MdDelete />
                 </button>
               </div>
             </div>
