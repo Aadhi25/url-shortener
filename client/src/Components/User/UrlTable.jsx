@@ -94,43 +94,44 @@ const UrlTable = () => {
               </tr>
             </thead>
             <tbody>
-              {urls.map((url) => (
-                <tr
-                  key={url._id}
-                  className="border-t hover:bg-gray-50 transition"
-                >
-                  <td className="px-4 py-3 font-medium text-blue-600">
-                    <button
-                      onClick={() => handleRedirect(url.shortString)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accentHover hover:underline font-medium cursor-pointer"
-                    >
-                      {url.shortUrl}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 max-w-xs truncate text-gray-600">
-                    {url.longUrl}
-                  </td>
-                  <td className="px-4 py-3 text-center font-medium">
-                    {realtimeStats[url.shortString] || url.noOfClicks}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => copyToClipboard(url.shortUrl)}
-                      className="rounded-lg px-3 py-1 text-blue-600 cursor-pointer hover:bg-blue-50"
-                    >
-                      <IoCopy />
-                    </button>
-                    <button
-                      onClick={() => deleteUrl(url._id)}
-                      className="rounded-lg px-3 py-1 text-red-600 cursor-pointer hover:bg-blue-50"
-                    >
-                      <MdDelete />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {urls &&
+                urls.map((url) => (
+                  <tr
+                    key={url._id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 py-3 font-medium text-blue-600">
+                      <button
+                        onClick={() => handleRedirect(url.shortString)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accentHover hover:underline font-medium cursor-pointer"
+                      >
+                        {url.shortUrl}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 max-w-xs truncate text-gray-600">
+                      {url.longUrl}
+                    </td>
+                    <td className="px-4 py-3 text-center font-medium">
+                      {realtimeStats[url.shortString] || url.noOfClicks}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => copyToClipboard(url.shortUrl)}
+                        className="rounded-lg px-3 py-1 text-blue-600 cursor-pointer hover:bg-blue-50"
+                      >
+                        <IoCopy />
+                      </button>
+                      <button
+                        onClick={() => deleteUrl(url._id)}
+                        className="rounded-lg px-3 py-1 text-red-600 cursor-pointer hover:bg-blue-50"
+                      >
+                        <MdDelete />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -138,36 +139,37 @@ const UrlTable = () => {
 
       {/* Mobile Card View */}
       <div className="space-y-4 md:hidden">
-        {urls.map((url) => (
-          <div
-            key={url._id}
-            className="rounded-xl border bg-white p-4 shadow-sm"
-          >
-            <div className="mb-2">
-              <button
-                onClick={() => handleRedirect(url.shortString)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accentHover hover:underline font-medium cursor-pointer"
-              >
-                {url.shortUrl}
-              </button>
-              <p className="text-sm text-gray-500 truncate">{url.longUrl}</p>
-            </div>
+        {urls &&
+          urls.map((url) => (
+            <div
+              key={url._id}
+              className="rounded-xl border bg-white p-4 shadow-sm"
+            >
+              <div className="mb-2">
+                <button
+                  onClick={() => handleRedirect(url.shortString)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accentHover hover:underline font-medium cursor-pointer"
+                >
+                  {url.shortUrl}
+                </button>
+                <p className="text-sm text-gray-500 truncate">{url.longUrl}</p>
+              </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">
-                👁 {url.noOfClicks} clicks
-              </span>
-              <button
-                onClick={() => deleteUrl(url._id)}
-                className="rounded-lg px-3 py-1 text-sm text-red-600 cursor-pointer"
-              >
-                Delete
-              </button>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">
+                  👁 {url.noOfClicks} clicks
+                </span>
+                <button
+                  onClick={() => deleteUrl(url._id)}
+                  className="rounded-lg px-3 py-1 text-sm text-red-600 cursor-pointer"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       <div className="flex items-center justify-between mt-6">
         <button

@@ -4,6 +4,7 @@ import Guest from "./Components/Guest/Guest";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Dashboard from "./Components/User/Dashboard";
 import VerifyPage from "./Components/Auth/VerifyPage";
+import NotFound from "./Components/NotFound/NotFound";
 
 const App = () => {
   return (
@@ -15,6 +16,8 @@ const App = () => {
           {/* Auth verify route */}
           <Route path="/auth/verify-user" element={<VerifyPage />} />
 
+          {/* Not found page */}
+          <Route path="*" element={<NotFound />} />
           {/* User Routes */}
           <Route
             path="/dashboard"

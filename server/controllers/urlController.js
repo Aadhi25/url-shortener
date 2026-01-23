@@ -160,7 +160,9 @@ const getUserUrls = async (req, res) => {
     ]);
 
     if (getAllUserUrls.length === 0) {
-      return res.status(400).send("No short urls are found for this user.");
+      return res
+        .status(200)
+        .json({ message: "No short urls are found for this user." });
     }
 
     const result = await Url.aggregate([
@@ -211,12 +213,13 @@ const getGuestUrls = async (req, res) => {
   if (req.isAuthenticated()) {
     return res.status(400).json({ message: "You are not a guest user." });
   }
+
   try {
     const getUrls = await Url.find({
       sessionId: req.sessionID,
     }).lean();
     // console.log(getUrls);
-    return res.json(getUrls);
+    return res.json(getUrls || []);
   } catch (error) {
     console.error("Error message: ", error);
   }

@@ -22,7 +22,6 @@ const UrlProvider = ({ children }) => {
         console.log(error);
       }
     };
-
     getGuestUrls();
   }, []);
 
