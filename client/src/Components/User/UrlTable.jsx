@@ -18,6 +18,7 @@ const UrlTable = () => {
     try {
       await navigator.clipboard.writeText(textToCopy);
       setIsCopied(true);
+      toast.success("Url Copied.");
       setTimeout(() => setIsCopied(false), 3000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
