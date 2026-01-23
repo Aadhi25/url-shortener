@@ -66,16 +66,6 @@ const createShortUrl = async (req, res) => {
 
 const redirectUrl = async (req, res) => {
   console.log("REDIRECT HIT:", req.params.shorturl);
-  const reservedPaths = [
-    "dashboard",
-    "auth",
-    "static",
-    "favicon.ico",
-    "manifest.json",
-    "robots.txt",
-    "sitemap.xml",
-  ];
-  const reservedExt = [".js", ".css", ".png", ".jpg", ".map"];
   const { shorturl } = req.params;
   const cached = await redisClient.get(`url:${shorturl}`);
   try {
@@ -83,13 +73,6 @@ const redirectUrl = async (req, res) => {
       await redisClient.incr(`clickcount:${shorturl}`);
       console.log("From Redis Cache");
       return res.redirect(cached);
-    }
-
-    if (
-      reservedPaths.includes(shorturl) ||
-      reservedExt.some((ext) => shorturl.endsWith(ext))
-    ) {
-      return res.status(400).json({ message: "Not a short url" });
     }
 
     const urlFind = await Url.findOne({
@@ -116,7 +99,7 @@ const redirectUrl = async (req, res) => {
         "Surrogate-Control": "no-store",
       });
 
-      return res.redirect(307, validated.href);
+      return res.redirect(301, validated.href);
     } else {
       return res.json({ message: "Invalid url" });
     }

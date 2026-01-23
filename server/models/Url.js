@@ -62,7 +62,7 @@ urlSchema.index(
 urlSchema.pre("save", function (next) {
   let shortId = this._id.toString().slice(12, this._id.length);
   this.shortString = hexToBase62(shortId);
-  this.shortUrl = `${process.env.FRONTEND_URL}/` + hexToBase62(shortId);
+  this.shortUrl = `${process.env.FRONTEND_URL}/r/` + hexToBase62(shortId);
   next();
 });
 

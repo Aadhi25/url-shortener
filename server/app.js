@@ -63,6 +63,6 @@ app.use(passport.session());
 app.use("/api/guest", urlRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", checkAuthenticated, userUrlRoutes);
-app.use("/", RedirectRoute);
+app.use("/r", RedirectRoute);
 
 export default app;

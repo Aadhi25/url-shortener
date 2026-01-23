@@ -1,12 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/dashboard/:path*",
-      "destination": "/index.html"
+      "source": "/r/:shorturl",
+      "destination": "https://api.shrinkit.co.in/r/:shorturl"
     },
     {
-      "source": "/auth/:path*",
-      "destination": "/index.html"
+      "source": "/r/:shorturl/(.*)",
+      "destination": "https://api.shrinkit.co.in/r/:shorturl"
     },
     {
       "source": "/(.*)",

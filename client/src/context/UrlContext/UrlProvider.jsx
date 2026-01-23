@@ -40,9 +40,9 @@ const UrlProvider = ({ children }) => {
     getSessionInfo();
   }, []);
 
-  const handleRedirect = (shortCode) => {
+  const handleRedirect = (shorturl) => {
     window.open(
-      `${import.meta.env.VITE_BACKEND_URL}/${shortCode}`,
+      `${import.meta.env.VITE_BACKEND_URL}/r/${shorturl}`,
       "_blank",
       "noopener,noreferrer",
     );
