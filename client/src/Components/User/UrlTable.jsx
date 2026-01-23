@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext, useMemo } from "react";
+import { IoCopy } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
 import axios from "../../api/axios";
 import UrlContext from "../../context/UrlContext/UrlContext";
 import toast from "react-hot-toast";
@@ -8,8 +10,19 @@ const UrlTable = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [stats, setStats] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
 
   const { shortUrl, handleRedirect } = useContext(UrlContext);
+
+  const copyToClipboard = async (textToCopy) => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 3000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   const realtimeStats = useMemo(() => {
     const map = {};
@@ -104,10 +117,16 @@ const UrlTable = () => {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
+                      onClick={() => copyToClipboard(url.shortUrl)}
+                      className="rounded-lg px-3 py-1 text-blue-600 cursor-pointer hover:bg-blue-50"
+                    >
+                      <IoCopy />
+                    </button>
+                    <button
                       onClick={() => deleteUrl(url._id)}
                       className="rounded-lg px-3 py-1 text-red-600 cursor-pointer hover:bg-blue-50"
                     >
-                      Delete
+                      <MdDelete />
                     </button>
                   </td>
                 </tr>
