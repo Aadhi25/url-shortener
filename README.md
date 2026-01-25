@@ -1,6 +1,6 @@
 Url Shortening Web Application
 
-If you don't want to use your id to test the app
+If you don't want to use your credentials to test the app
 
 Use this to login to test the app: email: demo@shrinkit.com password: demouser123
 
