@@ -126,6 +126,13 @@ const statsUrl = async (req, res) => {
       };
     });
 
+    res.set({
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+      "Surrogate-Control": "no-store",
+    });
+
     return res.json(stats);
   } catch (error) {
     console.log(error);
