@@ -1,6 +1,6 @@
 Url Shortening Web Application 
 
-Live Demo: 
+Live Demo: https://www.shrinkit.co.in/
 
 If you don't want to use your credentials to test the app
 
