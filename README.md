@@ -1,4 +1,6 @@
-Url Shortening Web Application
+Url Shortening Web Application 
+
+Live Demo: 
 
 If you don't want to use your credentials to test the app
 
@@ -8,7 +10,7 @@ Tech Stack: React, Tailwind Css, Node.js, Express, MongoDB, Redis, Jest and Supe
 
 Deployed with Vercel and Render.
 
-How the app works:
+How the app works: https://www.shrinkit.co.in
 
 - Unauthenticated users can create 2 urls. On logging in the urls will be transferred to the user account.
 
