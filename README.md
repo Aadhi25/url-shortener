@@ -4,7 +4,7 @@ Live Demo: https://www.shrinkit.co.in/
 
 If you don't want to use your credentials to test the app
 
-Use this to login to test the app: email: demo@shrinkit.com password: demouser123
+Use this to login to test the app: email: test@shrinkit.com password: Testuser@246
 
 Tech Stack: React, Tailwind Css, Node.js, Express, MongoDB, Redis, Jest and Supertest
 
