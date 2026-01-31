@@ -4,6 +4,9 @@ import { MdDelete } from "react-icons/md";
 import axios from "../../api/axios";
 import UrlContext from "../../context/UrlContext/UrlContext";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 const UrlTable = () => {
   const [urls, setUrls] = useState([]);
@@ -53,14 +56,15 @@ const UrlTable = () => {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await axios.get(`/api/user/stats`);
-        setStats(res.data);
+        // const res = await axios.get(`/api/user/stats`);
+        // setStats(res.data);
       } catch (error) {
         console.log(error);
       }
     };
 
     getStats();
+
     const id = setInterval(getStats, 10000);
     return () => clearInterval(id);
   }, []);

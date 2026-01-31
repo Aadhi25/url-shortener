@@ -2,6 +2,7 @@ import Url from "../models/Url.js";
 import { redisClient } from "../utils/redisClient.js";
 import { isValidUrl } from "../utils/isValidUrl.js";
 import sanitizeHtml from "sanitize-html";
+import { producer } from "../kafka/producer.js";
 
 const createShortUrl = async (req, res) => {
   const { longUrl, shortUrl } = req.body;
@@ -68,9 +69,31 @@ const redirectUrl = async (req, res) => {
   console.log("REDIRECT HIT:", req.params.shorturl);
   const { shorturl } = req.params;
   const cached = await redisClient.get(`url:${shorturl}`);
+
+  const kafkaProducer = async () => {
+    try {
+      const count = await redisClient.incr(`clickcount:${shorturl}`);
+      await producer.send({
+        topic: "update-clicks",
+        messages: [
+          {
+            key: shorturl,
+            value: JSON.stringify({
+              shortString: shorturl,
+              totalClicks: count,
+              timeStamp: Date.now(),
+            }),
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Kafka Error", error);
+    }
+  };
+
   try {
     if (cached) {
-      await redisClient.incr(`clickcount:${shorturl}`);
+      await kafkaProducer();
       console.log("From Redis Cache");
       return res.redirect(cached);
     }
@@ -85,11 +108,8 @@ const redirectUrl = async (req, res) => {
       await redisClient.expire(`url:${shorturl}`, 86400);
       console.log("Stored successfully in redis.");
 
-      // Real time click analytics
-      const count = redisClient.incr(`clickcount:${shorturl}`);
-      if (count === 1) {
-        await redisClient.expire(`clickcount:${shorturl}`);
-      }
+      // Publish a click event in kafka
+      await kafkaProducer();
 
       res.set({
         "Cache-Control":
@@ -104,7 +124,6 @@ const redirectUrl = async (req, res) => {
       return res.json({ message: "Invalid url" });
     }
   } catch (error) {
-    console.log(error);
     return res.json({ message: error.message });
   }
 };
