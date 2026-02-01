@@ -17,6 +17,7 @@ const io = new Server(server, {
   cors: { origin: process.env.FRONTEND_URL },
 });
 
+console.log(process.env.KAFKA_CA_CERTIFICATE.replace(/\\n/g, "\n"));
 await producer.connect();
 console.log("✅ Kafka Producer Connected");
 consumerFunc(io);
