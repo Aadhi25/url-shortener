@@ -14,6 +14,7 @@ const consumerFunc = async (io) => {
 
       io.emit("click-event", {
         shortString: data.shortString,
+        totalClicks: data.totalClicks,
         timeStamp: data.timeStamp,
       });
     },

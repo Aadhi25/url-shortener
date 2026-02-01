@@ -12,7 +12,7 @@ const UrlTable = () => {
   const [urls, setUrls] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [stats, setStats] = useState([]);
+  const [stats, setStats] = useState({});
   const [isCopied, setIsCopied] = useState(false);
 
   const { shortUrl, handleRedirect } = useContext(UrlContext);
@@ -28,21 +28,12 @@ const UrlTable = () => {
     }
   };
 
-  const realtimeStats = useMemo(() => {
-    const map = {};
-    stats.forEach((s) => {
-      map[s.shortString] = s.noOfClicks;
-    });
-    return map;
-  }, [stats]);
-
   useEffect(() => {
     const getUrls = async () => {
       try {
         const res = await axios.get(
           `/api/user/get-url-by-user?page=${page}&limit=7`,
         );
-        console.log(res.data.urls);
         setUrls(res.data.urls);
         setTotalPages(res.data.pagination.totalPages);
       } catch (error) {
@@ -54,20 +45,23 @@ const UrlTable = () => {
   }, [shortUrl, page]);
 
   useEffect(() => {
-    const getStats = async () => {
-      try {
-        // const res = await axios.get(`/api/user/stats`);
-        // setStats(res.data);
-      } catch (error) {
-        console.log(error);
-      }
+    socket.on("click-event", (data) => {
+      console.log("Data from websocket:", data);
+
+      setStats((prevState) => ({
+        ...prevState,
+        [data.shortString]: data.totalClicks,
+      }));
+    });
+
+    return () => {
+      socket.off("click-event");
     };
-
-    getStats();
-
-    const id = setInterval(getStats, 10000);
-    return () => clearInterval(id);
   }, []);
+
+  // const clicksData = (shortString) => {
+  //   return stats[shortString] || 0;
+  // };
 
   const deleteUrl = async (urlId) => {
     try {
@@ -119,7 +113,8 @@ const UrlTable = () => {
                       {url.longUrl}
                     </td>
                     <td className="px-4 py-3 text-center font-medium">
-                      {realtimeStats[url.shortString] || url.noOfClicks}
+                      {stats[url.shortString] + url.noOfClicks ||
+                        url.noOfClicks}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
@@ -164,7 +159,7 @@ const UrlTable = () => {
 
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">
-                  👁 {realtimeStats[url.shortString] || url.noOfClicks}
+                  👁 {url.noOfClicks}
                 </span>
                 <button
                   onClick={() => copyToClipboard(url.shortUrl)}
