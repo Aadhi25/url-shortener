@@ -3,8 +3,6 @@ import { redisClient } from "../utils/redisClient.js";
 function rateLimiter({ limit, windowInSec }) {
   return async (req, res, next) => {
     try {
-      console.log("Rate limiter is hit: ", req.user);
-      // Get the user id
       const userId = req.user._id;
       if (!userId)
         return res.status(401).json({

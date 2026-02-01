@@ -17,7 +17,6 @@ const io = new Server(server, {
   cors: { origin: process.env.FRONTEND_URL },
 });
 
-console.log(process.env.KAFKA_CA_CERTIFICATE.replace(/\\n/g, "\n"));
 await producer.connect();
 console.log("✅ Kafka Producer Connected");
 consumerFunc(io);
@@ -26,7 +25,7 @@ consumerFunc(io);
 await mongoose.connect(process.env.MONGO_CON_STRING);
 console.log("MongoDB connected");
 
-cron.schedule("*/9 * * * *", async () => {
+cron.schedule("*/2 * * * *", async () => {
   console.log("Cron running");
   await syncToDb();
 });
