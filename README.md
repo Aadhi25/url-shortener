@@ -1,42 +1,84 @@
-Url Shortening Web Application 
+<h1 style="text-align: center;">Shrink.It</h1>
+<p style="font-size:17px">Shrink.It is a URL Shortening web application that converts your big links to short URL.</p>
+<a style="font-size:16px" href="https://www.shrinkit.co.in">🔗 Shrink.It</a> 
+<p style="font-size:16px">If you don't want to use your credentials to test the app. Use the below credentials to login</p>
+<p style="font-size:16px">Email: test@shrinkit.com</p>
+<p style="font-size:16px">Password: Testuser@246</p>
+<h2>Features</h2>
+<p style="font-size:16px">🔗 Short URL: Generates unique Short Urls</p>
+<p style="font-size:16px">⚡ Quick Redirects: Cached long urls using Redis</p>
+<p style="font-size:16px">📊 Realtime Click Counts: Kafka with Websockets and Redis</p>
+<p style="font-size:16px">⛔ Rate Limiting: Prevent spamming of creating so many URLs within a time period.</p>
+<p style="font-size:16px">➡️ Url Transfer: Guest Urls will be transferred to user after logging in</p>
+<p style="font-size:16px">🔐 Authentication: Users can authenticate using google or using email and password</p>
+<p style="font-size:16px">📦 Batch Updates: Cron jobs run every 2 mins to update click counts to DB</p>
+<h2>Tech Stack</h2>
+<p style="font-size:16px">Fronend: React, React-router, TailwindCss</p>
+<p style="font-size:16px">Backend: Node.js, Express.js, MongoDB, Redis, Kafka, Websockets(Socket.Io)</p>
+<p style="font-size:16px">Architecture and concepts: MVC Architecture, RESTful API, Rate Limiting, Caching, Event Streaming, Bi-directional communication, DB Transactions and Indexing, API Pagination</p>
+<p style="font-size:16px">Deployment: Vercel and Render</p>
+<h2>Getting Started</h2>
+<p style="font-size:16px">Prerequisites: Node.js, NPM, Nodemon, MongoDb</p>
+<p style="font-size:16px">Redis & Kafka: For development I installed both redis and kafk in my computer to run on localhost. For production I have used Upstash Redis and Aiven Kafka</p>
 
-Live Demo: https://www.shrinkit.co.in/
+<h2>Clone the Repository</h2>
 
-If you don't want to use your credentials to test the app
+```
+git clone https://github.com/Aadhi25/url-shortener.git
+cd url-shortener
+```
 
-Use this to login to test the app: email: test@shrinkit.com password: Testuser@246
+<h2>Environment Variables for backend</h2>
 
-Tech Stack: React, Tailwind Css, Node.js, Express, MongoDB, Redis, Jest and Supertest
+```
 
-Deployed with Vercel and Render.
+MONGO_CON_STRING=
+SECRET=
+NODE_ENV=
+RESEND_API_KEY=
+KAFKA_BROKER=
+KAFKA_CA_CERTIFICATE=
+KAFKA_ACCESS_KEY=
+KAFKA_CERT=
+KAFKA_USERNAME=
+KAFKA_PASSWORD=
+FRONTEND_URL=
+BACKEND_URL=
+GOOGLE_APP_PASSWORD=
+GOOGLE_EMAIL=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+REDIS_URL=
 
-How the app works: https://www.shrinkit.co.in
+```
 
-- Unauthenticated users can create 2 urls. On logging in the urls will be transferred to the user account.
+<h2>Environment Variables for frontend</h2>
 
-- Users can register and login through email and password or with google sign in.
+```
+VITE_BACKEND_URL=
+VITE_FRONTEND_URL=
+NODE_ENV=
+```
 
-- When registering with email and password the users have to verify their email.
+<h2>Install the packages and run the app on localhost</h2>
 
-- If a user is logged in through email and password and later decides to login through google with same email the account can be accessed through from google login next time.
+```
+cd server
+npm install && npm run dev
 
-- Rate limiting: After logging in the user can create any number of urls but with a limitation of 10 urls per minute. If the user tries to create more than 10 urls per minute then the user
-  will be shown a warning to try again after a minute.
+cd client
+npm install && npm run dev
+```
 
-- The users can see how many times a url has been clicked or redirected. The clicks update every 10 seconds with the use of redis in backend.
+<h2>Testing in backend</h2>
 
-- The click count is initially stored and updated in redis and every 9 minutes a cron job is run to update the click count in MongoDB. After the DB updates redis count goes to 0.
+```
+.env.test
+SECRET=
 
-- Uses pagination in dashboard so that each page has 7 urls.
+npm run test
+```
 
-- Users can copy and delete urls.
-
-- Users can also delete their account.
-
-Future Upgrades
-
-- Working on to include custom domain name.
-
-- User has to pay to access this facility.
-
-- Analytics like from which location most of them has clicked a url from and some useful features.
+<h2>Future Upgrades</h2>
+<p style="font-size:16px">🔗 Custom Domains</p>
+<p style="font-size:16px">💳 Payment Features</p>
