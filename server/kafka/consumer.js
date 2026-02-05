@@ -8,7 +8,6 @@ const consumerFunc = async (io) => {
 
   await consumer.run({
     eachMessage: async ({ message }) => {
-      console.log("--- MESSAGE RECEIVED ---");
       const data = JSON.parse(message.value.toString());
       console.log("Consumer Data", data);
 

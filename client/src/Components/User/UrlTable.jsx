@@ -159,7 +159,7 @@ const UrlTable = () => {
 
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">
-                  👁 {url.noOfClicks}
+                  👁 {stats[url.shortString] + url.noOfClicks || url.noOfClicks}
                 </span>
                 <button
                   onClick={() => copyToClipboard(url.shortUrl)}
